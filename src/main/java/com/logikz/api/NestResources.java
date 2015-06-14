@@ -25,9 +25,7 @@ public class NestResources {
         NestDAO nestDAO = new NestDAO();
         try {
             String token = dao.getToken(stateId);
-            if (token != null) {
-                return nestDAO.setTemperature(token, temperature);
-            }
+            nestDAO.setTemperature(token, temperature);
         } catch (SQLException | URISyntaxException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
