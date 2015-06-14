@@ -53,7 +53,7 @@ public class NestDAO {
         String locationUri = request.getLocationUri();
         System.out.println("POST: " + locationUri);
 
-        Response response = ClientBuilder.newClient().target(locationUri).request().post(Entity.entity("", MediaType.TEXT_PLAIN_TYPE));
+        Response response = ClientBuilder.newClient().target(locationUri).request().accept(MediaType.WILDCARD_TYPE).post(Entity.entity("", MediaType.TEXT_PLAIN_TYPE));
 
         if(response.getStatus() > 300){
             System.out.println(response.readEntity(String.class));
