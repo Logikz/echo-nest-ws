@@ -12,6 +12,9 @@ public class NestError {
         this.error_description = error_description;
     }
 
+    public NestError() {
+    }
+
     public String getError() {
         return error;
     }

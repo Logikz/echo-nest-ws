@@ -12,6 +12,9 @@ public class NestToken {
         this.expires_in = expires_in;
     }
 
+    public NestToken() {
+    }
+
     public String getAccess_token() {
         return access_token;
     }
