@@ -13,7 +13,7 @@ public class Main {
         Server server = new Server(80);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
-
+        System.out.println("Context Path Created");
         ServletHolder jerseyServlet = context.addServlet(
                 org.glassfish.jersey.servlet.ServletContainer.class, "/*");
         jerseyServlet.setInitOrder(0);
@@ -24,6 +24,7 @@ public class Main {
                 "com.logikz.api");
 
         try {
+            System.out.println("Server starting");
             server.start();
             System.out.println("Server started");
 //            server.join();
