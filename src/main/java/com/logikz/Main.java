@@ -1,5 +1,6 @@
 package com.logikz;
 
+import com.logikz.api.NestResources;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -14,15 +15,17 @@ public class Main {
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
+
         System.out.println("Context Path Created");
+        
         ServletHolder jerseyServlet = context.addServlet(
                 org.glassfish.jersey.servlet.ServletContainer.class, "/*");
         jerseyServlet.setInitOrder(0);
 
         // Tells the Jersey Servlet which REST service/class to load.
         jerseyServlet.setInitParameter(
-                "jersey.config.server.provider.packages",
-                "com.logikz.api");
+                "jersey.config.server.provider.classnames",
+                NestResources.class.getCanonicalName());
 
         try {
             System.out.println("Server starting");
