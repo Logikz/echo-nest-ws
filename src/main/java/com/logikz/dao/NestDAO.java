@@ -56,17 +56,23 @@ public class NestDAO {
 
         Response response = ClientBuilder.newClient().target(locationUri).request().accept(MediaType.APPLICATION_JSON).post(Entity.entity("", MediaType.TEXT_PLAIN_TYPE));
         System.out.println("POST COMPLETE");
-        if (response.getStatus() == 400) {
-            NestError error = response.readEntity(NestError.class);
-            System.out.println("ERROR:" + error.getError_description());
+        try{
+            if (response.getStatus() == 400) {
+                NestError error = response.readEntity(NestError.class);
+                System.out.println("ERROR:" + error.getError_description());
 
+                return null;
+            } else {
+                NestToken token = response.readEntity(NestToken.class);
+
+                System.out.println("Token: " + token.getAccess_token());
+
+                return token.getAccess_token();
+            }
+        } catch (Exception e){
+            System.out.println(e.getMessage());
             return null;
-        } else {
-            NestToken token = response.readEntity(NestToken.class);
-
-            System.out.println("Token: " + token.getAccess_token());
-
-            return token.getAccess_token();
         }
+
     }
 }
