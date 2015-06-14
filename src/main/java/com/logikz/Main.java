@@ -10,7 +10,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 public class Main {
     public static void main(String[] args) throws Exception {
         System.out.println("--- ECHO NEST BRIDGE COMING ALIVE ---");
-        Server server = new Server(8080);
+        Server server = new Server(80);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
 
@@ -25,7 +25,9 @@ public class Main {
 
         try {
             server.start();
-            server.join();
+            System.out.println("Server started");
+//            server.join();
+//            System.out.println("Server joined");
         } finally {
             server.destroy();
         }
