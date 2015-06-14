@@ -31,12 +31,16 @@ public class NestDAO {
                                          .post( Entity.entity( temperature, MediaType.TEXT_PLAIN_TYPE ) );
         if ( response.getStatus() != 200 ) {
             System.out.println("Failed...trying again in 5 seconds");
-            try {
-                Thread.sleep( 1000 * 5 );
-                setTemperature( token, temperature );
-            } catch ( InterruptedException e ) {
-                return Response.ok().build();
-            }
+            System.out.println(response.readEntity( String.class ));
+//            try {
+//                for(int i=0; i < 10; ++i){
+//                    Thread.sleep( 1000 * 5 );
+//                    setTemperature( token, temperature );
+//                }
+//
+//            } catch ( InterruptedException e ) {
+//                return Response.ok().build();
+//            }
         }
 
         return response;
