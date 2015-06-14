@@ -3,6 +3,7 @@ package com.logikz.api;
 
 import com.logikz.dao.NestDAO;
 import com.logikz.dao.PostgresDAO;
+import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
@@ -54,7 +55,7 @@ public class NestResources {
         try {
             String token = nestDAO.getToken(code);
             postgresDAO.setToken(stateId, token);
-        } catch (URISyntaxException | SQLException | ClassNotFoundException e) {
+        } catch (URISyntaxException | SQLException | ClassNotFoundException | OAuthSystemException e) {
             System.out.println(e.getMessage());
         }
 
