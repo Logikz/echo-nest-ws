@@ -20,18 +20,16 @@ public class PostgresDAO {
         System.out.println( "Set auth token" );
         try ( Connection connection = PostgresConnection.getConnection() ) {
             Statement statement = connection.createStatement();
-            statement.executeQuery( "DROP TABLE IF EXISTS nest" );
-            statement.executeUpdate( "CREATE TABLE IF NOT EXISTS nest (stateId VARCHAR(50), token VARCHAR(500))" );
-            statement.executeUpdate( "INSERT INTO nest VALUES (" + stateId + ", " + token + ")" );
+            statement.executeUpdate( "INSERT INTO auth VALUES (" + stateId + ", " + token + ")" );
         }
     }
 
     public String getToken( String stateId ) throws URISyntaxException, SQLException, ClassNotFoundException {
         System.out.println( "Get auth token" );
-        dump();
+        //dump();
         try ( Connection connection = PostgresConnection.getConnection() ) {
             Statement statement = connection.createStatement();
-            String sql = "SELECT token FROM nest WHERE stateId=" + stateId;
+            String sql = "SELECT token FROM auth WHERE stateId=" + stateId;
             System.out.println( sql );
             try ( ResultSet resultSet = statement.executeQuery( sql ) ) {
                 if ( resultSet.next() ) {
@@ -46,7 +44,7 @@ public class PostgresDAO {
     private void dump() throws ClassNotFoundException, SQLException, URISyntaxException {
         try ( Connection connection = PostgresConnection.getConnection() ) {
             Statement statement = connection.createStatement();
-            try ( ResultSet resultSet = statement.executeQuery( "SELECT * FROM nest" ) ) {
+            try ( ResultSet resultSet = statement.executeQuery( "SELECT * FROM auth" ) ) {
                 while ( resultSet.next() ) {
                     System.out.println( "----ROW----" );
                     System.out.println( resultSet.getString( 0 ) );
