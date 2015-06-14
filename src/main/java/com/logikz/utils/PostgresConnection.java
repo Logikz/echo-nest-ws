@@ -11,7 +11,7 @@ import java.sql.SQLException;
  */
 public class PostgresConnection {
     public static Connection getConnection() throws URISyntaxException, SQLException, ClassNotFoundException {
-        Class.forName("org.postgresql.Driver");
+        //Class.forName("org.postgresql.Driver");
         URI dbUri = new URI(System.getenv("DATABASE_URL"));
 
         String username = dbUri.getUserInfo().split(":")[0];
