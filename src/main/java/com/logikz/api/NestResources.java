@@ -4,10 +4,7 @@ package com.logikz.api;
 import com.logikz.dao.NestDAO;
 import com.logikz.dao.PostgresDAO;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -47,14 +44,15 @@ public class NestResources {
         return Response.ok().build();
     }
 
-    @POST
+    @GET
     @Path("{stateId}/auth/callback")
-    public Response callback(@PathParam("stateId") String stateId, String body) {
+    public Response callback(@PathParam("stateId") String stateId, @QueryParam("code") String token) {
         NestDAO nestDAO = new NestDAO();
         PostgresDAO postgresDAO = new PostgresDAO();
-
+        System.out.println("StateID: " + stateId);
+        System.out.println("code: " + token);
         try {
-            postgresDAO.setToken(stateId, nestDAO.getToken(body));
+            postgresDAO.setToken(stateId, token);
         } catch (URISyntaxException | SQLException e) {
             System.out.println(e.getMessage());
         }

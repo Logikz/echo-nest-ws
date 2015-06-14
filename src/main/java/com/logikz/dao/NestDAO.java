@@ -21,7 +21,7 @@ public class NestDAO {
                     .authorizationLocation("https://home.nest.com/login/oauth2")
                     .setClientId("2f2612c7-6d36-4c5c-8c19-2903bb7be430")
                     .setState(stateId)
-                            //.setRedirectURI("https://nest-echo.herokuapp.com/" + stateId + "/auth/callback")
+                    .setRedirectURI("https://nest-echo.herokuapp.com/" + stateId + "/auth/callback")
                     .buildQueryMessage();
             String locationUri = request.getLocationUri();
             System.out.println("GET: " + locationUri);
