@@ -18,8 +18,8 @@ import java.sql.SQLException;
 public class NestResources {
 
     @POST
-    @Path("/{stateId}/temperature/{temperature}")
-    public Response setTemperature(@PathParam("stateId") String stateId, @PathParam("temperature") int temperature) {
+    @Path("/{stateId}/temperature/")
+    public Response setTemperature(@PathParam("stateId") String stateId, int temperature) {
         System.out.println("Temperature: " + temperature);
         PostgresDAO dao = new PostgresDAO();
         NestDAO nestDAO = new NestDAO();

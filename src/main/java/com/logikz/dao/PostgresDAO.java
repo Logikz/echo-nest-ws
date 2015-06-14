@@ -16,22 +16,23 @@ public class PostgresDAO {
     public PostgresDAO() {
     }
 
-    public void setToken(String stateId, String token) throws URISyntaxException, SQLException, ClassNotFoundException {
-        try(Connection connection = PostgresConnection.getConnection()){
+    public void setToken( String stateId, String token ) throws URISyntaxException, SQLException, ClassNotFoundException {
+        try ( Connection connection = PostgresConnection.getConnection() ) {
             Statement statement = connection.createStatement();
-            statement.executeQuery("DROP TABLE IF EXISTS nest");
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS nest (stateId VARCHAR(50), token VARCHAR(500))");
-            statement.executeUpdate("INSERT INTO nest VALUES (" + stateId + ", " + token + ")");
+            statement.executeQuery( "DROP TABLE IF EXISTS nest" );
+            statement.executeUpdate( "CREATE TABLE IF NOT EXISTS nest (stateId VARCHAR(50), token VARCHAR(500))" );
+            statement.executeUpdate( "INSERT INTO nest VALUES (" + stateId + ", " + token + ")" );
         }
     }
 
-    public String getToken(String stateId) throws URISyntaxException, SQLException, ClassNotFoundException {
-        try(Connection connection = PostgresConnection.getConnection()){
+    public String getToken( String stateId ) throws URISyntaxException, SQLException, ClassNotFoundException {
+        try ( Connection connection = PostgresConnection.getConnection() ) {
             Statement statement = connection.createStatement();
 
-            try(ResultSet resultSet = statement.executeQuery("SELECT token FROM nest WHERE stateId=" + stateId)){
-                if(resultSet.next()){
-                    return resultSet.getString(0);
+            try ( ResultSet resultSet = statement.executeQuery( "SELECT token FROM nest WHERE stateId=" + stateId ) ) {
+                if ( resultSet.next() ) {
+                    System.out.println( "Auth token: " + resultSet.getString( 0 ) );
+                    return resultSet.getString( 0 );
                 }
             }
         }

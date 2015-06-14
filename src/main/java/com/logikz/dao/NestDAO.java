@@ -21,6 +21,7 @@ public class NestDAO {
     public static final String THERMOSTAT = "LULEEUtZ_cQQs-LF12lyuhOizG3Nxo_B";
 
     public Response setTemperature( String token, int temperature ) {
+        System.out.println("Setting the temperature to " + temperature);
         Response response = ClientBuilder.newClient()
                                          .target( "https://developer-api.nest.com" )
                                          .path( "/devices/thermostats/" + THERMOSTAT + "/target_temperature_f" )
@@ -29,6 +30,7 @@ public class NestDAO {
                                          .accept( MediaType.APPLICATION_JSON )
                                          .post( Entity.entity( temperature, MediaType.TEXT_PLAIN_TYPE ) );
         if ( response.getStatus() != 200 ) {
+            System.out.println("Failed...trying again in 5 seconds");
             try {
                 Thread.sleep( 1000 * 5 );
                 setTemperature( token, temperature );
