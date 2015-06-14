@@ -9,15 +9,15 @@ import org.eclipse.jetty.servlet.ServletHolder;
  * Created by Nick on 6/13/2015.
  */
 public class Main {
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         System.out.println("--- ECHO NEST BRIDGE COMING ALIVE ---");
-        Server server = new Server(80);
+        Server server = new Server(Integer.valueOf(System.getenv("PORT")));
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
         server.setHandler(context);
 
         System.out.println("Context Path Created");
-        
+
         ServletHolder jerseyServlet = context.addServlet(
                 org.glassfish.jersey.servlet.ServletContainer.class, "/*");
         jerseyServlet.setInitOrder(0);
@@ -31,8 +31,12 @@ public class Main {
             System.out.println("Server starting");
             server.start();
             System.out.println("Server started");
-//            server.join();
-//            System.out.println("Server joined");
+            server.join();
+            System.out.println("Server joined");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             server.destroy();
         }
