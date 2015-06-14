@@ -60,6 +60,7 @@ public class NestDAO {
         try{
             if (response.getStatus() == 400) {
                 String error = response.readEntity(String.class);
+                System.out.println("response: " + error);
                 Genson genson = new Genson();
                 NestError nestError = genson.deserialize(error, NestError.class);
                 System.out.println("ERROR:" + nestError.getError_description());
@@ -67,6 +68,7 @@ public class NestDAO {
                 return null;
             } else {
                 String success = response.readEntity(String.class);
+                System.out.println("response: " + success);
                 Genson genson = new Genson();
                 NestToken token = genson.deserialize(success, NestToken.class);
 
