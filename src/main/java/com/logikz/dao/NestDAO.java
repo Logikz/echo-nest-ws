@@ -1,5 +1,6 @@
 package com.logikz.dao;
 
+import com.logikz.model.NestError;
 import com.logikz.model.NestToken;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
@@ -53,10 +54,12 @@ public class NestDAO {
         String locationUri = request.getLocationUri();
         System.out.println("POST: " + locationUri);
 
-        Response response = ClientBuilder.newClient().target(locationUri).request().accept(MediaType.WILDCARD_TYPE).post(Entity.entity("", MediaType.TEXT_PLAIN_TYPE));
+        Response response = ClientBuilder.newClient().target(locationUri).request().accept(MediaType.APPLICATION_JSON).post(Entity.entity("", MediaType.TEXT_PLAIN_TYPE));
+        System.out.println("POST COMPLETE");
+        if (response.getStatus() == 400) {
+            NestError error = response.readEntity(NestError.class);
+            System.out.println("ERROR:" + error.getError_description());
 
-        if(response.getStatus() > 300){
-            System.out.println(response.readEntity(String.class));
             return null;
         } else {
             NestToken token = response.readEntity(NestToken.class);
