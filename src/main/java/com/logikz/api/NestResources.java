@@ -27,10 +27,10 @@ public class NestResources {
             if (token != null) {
                 return nestDAO.setTemperature(token, temperature);
             }
-        } catch (SQLException | URISyntaxException e) {
+        } catch (SQLException | URISyntaxException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
-        nestDAO.doNestAuthorization(stateId);
+        //nestDAO.doNestAuthorization(stateId);
 
         return Response.ok().build();
     }
@@ -39,7 +39,7 @@ public class NestResources {
     @Path("/{stateId}/auth")
     public Response authorize(@PathParam("stateId") String stateId) {
         NestDAO nestDAO = new NestDAO();
-        nestDAO.doNestAuthorization(stateId);
+        //nestDAO.doNestAuthorization(stateId);
 
         return Response.ok().build();
     }
@@ -53,7 +53,7 @@ public class NestResources {
         System.out.println("code: " + token);
         try {
             postgresDAO.setToken(stateId, token);
-        } catch (URISyntaxException | SQLException e) {
+        } catch (URISyntaxException | SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
         }
 

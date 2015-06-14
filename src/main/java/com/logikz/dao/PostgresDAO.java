@@ -16,7 +16,7 @@ public class PostgresDAO {
     public PostgresDAO() {
     }
 
-    public void setToken(String stateId, String token) throws URISyntaxException, SQLException {
+    public void setToken(String stateId, String token) throws URISyntaxException, SQLException, ClassNotFoundException {
         try(Connection connection = PostgresConnection.getConnection()){
             Statement statement = connection.createStatement();
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS nest (stateId VARCHAR(50), token VARCHAR(500))");
@@ -24,7 +24,7 @@ public class PostgresDAO {
         }
     }
 
-    public String getToken(String stateId) throws URISyntaxException, SQLException {
+    public String getToken(String stateId) throws URISyntaxException, SQLException, ClassNotFoundException {
         try(Connection connection = PostgresConnection.getConnection()){
             Statement statement = connection.createStatement();
 
