@@ -36,7 +36,7 @@ public class PostgresDAO {
             try ( ResultSet resultSet = statement.executeQuery( sql ) ) {
                 if ( resultSet.next() ) {
                     System.out.println( "Auth token: " + resultSet.getString( 0 ) );
-                    return resultSet.getString( 0 );
+                    return resultSet.getString( 1 );
                 }
             }
         }
