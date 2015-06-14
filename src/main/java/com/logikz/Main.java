@@ -4,13 +4,12 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 
-import javax.servlet.http.HttpServlet;
-
 /**
  * Created by Nick on 6/13/2015.
  */
-public class Main extends HttpServlet {
+public class Main {
     public static void main(String[] args) throws Exception {
+        System.out.println("--- ECHO NEST BRIDGE COMING ALIVE ---");
         Server server = new Server(80);
         ServletContextHandler context = new ServletContextHandler(ServletContextHandler.SESSIONS);
         context.setContextPath("/");
@@ -25,7 +24,6 @@ public class Main extends HttpServlet {
                 "com.logikz.api");
 
         try {
-            System.out.println("--- ECHO NEST BRIDGE COMING ALIVE ---");
             server.start();
             server.join();
         } finally {
