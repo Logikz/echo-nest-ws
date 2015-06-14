@@ -34,9 +34,9 @@ public class Main {
             server.join();
             System.out.println("Server joined");
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         } finally {
             server.destroy();
         }
