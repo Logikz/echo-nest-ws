@@ -53,10 +53,17 @@ public class NestDAO {
         String locationUri = request.getLocationUri();
         System.out.println("POST: " + locationUri);
 
-        NestToken token = ClientBuilder.newClient().target(locationUri).request().post(Entity.entity("", MediaType.TEXT_PLAIN_TYPE)).readEntity(NestToken.class);
+        Response response = ClientBuilder.newClient().target(locationUri).request().post(Entity.entity("", MediaType.TEXT_PLAIN_TYPE));
 
-        System.out.println("Token: " + token.getAccess_token());
+        if(response.getStatus() > 300){
+            System.out.println(response.readEntity(String.class));
+            return null;
+        } else {
+            NestToken token = response.readEntity(NestToken.class);
 
-        return token.getAccess_token();
+            System.out.println("Token: " + token.getAccess_token());
+
+            return token.getAccess_token();
+        }
     }
 }
