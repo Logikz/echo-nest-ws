@@ -25,6 +25,7 @@ public class Main extends HttpServlet {
                 "com.logikz.api");
 
         try {
+            System.out.println("--- ECHO NEST BRIDGE COMING ALIVE ---");
             server.start();
             server.join();
         } finally {

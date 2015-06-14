@@ -9,7 +9,6 @@ import javax.ws.rs.core.Response;
 /**
  * Created by Nick on 6/13/2015.
  */
-
 @Path("/nest")
 public class NestResources {
 
