@@ -19,6 +19,7 @@ public class PostgresDAO {
     public void setToken(String stateId, String token) throws URISyntaxException, SQLException, ClassNotFoundException {
         try(Connection connection = PostgresConnection.getConnection()){
             Statement statement = connection.createStatement();
+            statement.executeQuery("DROP TABLE IF EXISTS nest");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS nest (stateId VARCHAR(50), token VARCHAR(500))");
             statement.executeUpdate("INSERT INTO nest VALUES (" + stateId + ", " + token + ")");
         }

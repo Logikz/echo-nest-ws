@@ -46,12 +46,13 @@ public class NestResources {
 
     @GET
     @Path("{stateId}/auth/callback")
-    public Response callback(@PathParam("stateId") String stateId, @QueryParam("code") String token) {
+    public Response callback(@PathParam("stateId") String stateId, @QueryParam("code") String code) {
         NestDAO nestDAO = new NestDAO();
         PostgresDAO postgresDAO = new PostgresDAO();
         System.out.println("StateID: " + stateId);
-        System.out.println("code: " + token);
+        System.out.println("code: " + code);
         try {
+            String token = nestDAO.getToken(code);
             postgresDAO.setToken(stateId, token);
         } catch (URISyntaxException | SQLException | ClassNotFoundException e) {
             System.out.println(e.getMessage());
