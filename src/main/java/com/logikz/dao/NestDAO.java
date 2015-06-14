@@ -28,7 +28,8 @@ public class NestDAO {
                                          .queryParam( "auth", token )
                                          .request()
                                          .accept( MediaType.APPLICATION_JSON )
-                                         .post( Entity.entity( temperature, MediaType.TEXT_PLAIN_TYPE ) );
+                                         .put( Entity.entity( temperature, MediaType.TEXT_PLAIN_TYPE ) );
+
         if ( response.getStatus() != 200 ) {
             System.out.println("Failed...trying again in 5 seconds");
             System.out.println(response.readEntity( String.class ));
