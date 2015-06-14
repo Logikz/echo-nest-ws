@@ -2,6 +2,7 @@ package com.logikz.dao;
 
 import com.logikz.model.NestError;
 import com.logikz.model.NestToken;
+import com.owlike.genson.Genson;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
@@ -58,12 +59,16 @@ public class NestDAO {
         System.out.println("POST COMPLETE");
         try{
             if (response.getStatus() == 400) {
-                NestError error = response.readEntity(NestError.class);
-                System.out.println("ERROR:" + error.getError_description());
+                String error = response.readEntity(String.class);
+                Genson genson = new Genson();
+                NestError nestError = genson.deserialize(error, NestError.class);
+                System.out.println("ERROR:" + nestError.getError_description());
 
                 return null;
             } else {
-                NestToken token = response.readEntity(NestToken.class);
+                String success = response.readEntity(String.class);
+                Genson genson = new Genson();
+                NestToken token = genson.deserialize(success, NestToken.class);
 
                 System.out.println("Token: " + token.getAccess_token());
 
