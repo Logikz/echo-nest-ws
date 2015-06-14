@@ -1,8 +1,9 @@
 package com.logikz.api;
 
 
-import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.core.Response;
 
 
@@ -12,9 +13,10 @@ import javax.ws.rs.core.Response;
 @Path("/nest")
 public class NestResources {
 
-    @GET
-    public Response ping() {
-        System.out.println("PING");
+    @POST
+    @Path("/temperature/{temperature}")
+    public Response ping(@PathParam("temperature") int temperature) {
+        System.out.println("Temperature: " + temperature);
         return Response.ok().build();
     }
 }
