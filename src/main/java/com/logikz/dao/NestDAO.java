@@ -101,7 +101,7 @@ public class NestDAO {
 
     }
 
-    public int getTemperature( String token ) {
+    public int getTargetTemperature( String token ) {
         System.out.println( "Getting the temperature" );
         Response response = ClientBuilder.newClient()
                                          .target( "https://developer-api.nest.com" )
@@ -117,5 +117,52 @@ public class NestDAO {
         }
 
         return response.readEntity( Integer.class );
+    }
+
+    public int getAmbientTemperature( String token ) {
+        System.out.println( "Getting the ambient temperature" );
+        Response response = ClientBuilder.newClient()
+                                         .target( "https://developer-api.nest.com" )
+                                         .path( "/devices/thermostats/" + THERMOSTAT + "/ambient_temperature_f" )
+                                         .queryParam( "auth", token )
+                                         .request()
+                                         .accept( MediaType.APPLICATION_JSON )
+                                         .get();
+
+        if ( response.getStatus() != 200 ) {
+            System.out.println( "Failed...trying again in 5 seconds" );
+            System.out.println( response.readEntity( String.class ) );
+        }
+
+        return response.readEntity( Integer.class );
+    }
+
+    public void setThermostat( String token, String state ) {
+        System.out.println( "Setting the thermostat to: " + state );
+        int temperature;
+        switch ( state.toLowerCase() ) {
+            case "on":
+                temperature = getAmbientTemperature( token );
+                temperature -= 2;
+                setTemperature( token, temperature );
+                break;
+            case "off":
+                temperature = getAmbientTemperature( token );
+                temperature += 5;
+                setTemperature( token, temperature );
+                break;
+            case "up":
+                temperature = getTargetTemperature( token );
+                temperature += 2;
+                setTemperature( token, temperature );
+                break;
+            case "down":
+                temperature = getTargetTemperature( token );
+                temperature -= 2;
+                setTemperature( token, temperature );
+                break;
+            default:
+                throw new IllegalArgumentException( "Unknown state" );
+        }
     }
 }
