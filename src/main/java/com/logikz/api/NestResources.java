@@ -6,6 +6,7 @@ import com.logikz.dao.PostgresDAO;
 import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 
 import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URISyntaxException;
 import java.sql.SQLException;
@@ -14,20 +15,21 @@ import java.sql.SQLException;
 /**
  * Created by Nick on 6/13/2015.
  */
-@Path("/nest")
+@Path( "/nest" )
 public class NestResources {
 
     @POST
-    @Path("/{stateId}/temperature/")
-    public Response setTemperature(@PathParam("stateId") String stateId, int temperature) {
-        System.out.println("Temperature: " + temperature);
+    @Path( "/{stateId}/temperature/" )
+    @Consumes( MediaType.TEXT_PLAIN )
+    public Response setTemperature( @PathParam( "stateId" ) String stateId, int temperature ) {
+        System.out.println( "Temperature: " + temperature );
         PostgresDAO dao = new PostgresDAO();
         NestDAO nestDAO = new NestDAO();
         try {
-            String token = dao.getToken(stateId);
-            nestDAO.setTemperature(token, temperature);
-        } catch (SQLException | URISyntaxException | ClassNotFoundException e) {
-            System.out.println(e.getMessage());
+            String token = dao.getToken( stateId );
+            nestDAO.setTemperature( token, temperature );
+        } catch ( SQLException | URISyntaxException | ClassNotFoundException e ) {
+            System.out.println( e.getMessage() );
         }
         //nestDAO.doNestAuthorization(stateId);
 
@@ -35,8 +37,8 @@ public class NestResources {
     }
 
     @GET
-    @Path("/{stateId}/auth")
-    public Response authorize(@PathParam("stateId") String stateId) {
+    @Path( "/{stateId}/auth" )
+    public Response authorize( @PathParam( "stateId" ) String stateId ) {
         NestDAO nestDAO = new NestDAO();
         //nestDAO.doNestAuthorization(stateId);
 
@@ -44,19 +46,25 @@ public class NestResources {
     }
 
     @GET
-    @Path("{stateId}/auth/callback")
-    public Response callback(@PathParam("stateId") String stateId, @QueryParam("code") String code) {
+    @Path( "{stateId}/auth/callback" )
+    public Response callback( @PathParam( "stateId" ) String stateId, @QueryParam( "code" ) String code ) {
         NestDAO nestDAO = new NestDAO();
         PostgresDAO postgresDAO = new PostgresDAO();
-        System.out.println("StateID: " + stateId);
-        System.out.println("code: " + code);
+        System.out.println( "StateID: " + stateId );
+        System.out.println( "code: " + code );
         try {
-            String token = nestDAO.getToken(code);
-            postgresDAO.setToken(stateId, token);
-        } catch (URISyntaxException | SQLException | ClassNotFoundException | OAuthSystemException e) {
-            System.out.println(e.getMessage());
+            String token = nestDAO.getToken( code );
+            postgresDAO.setToken( stateId, token );
+        } catch ( URISyntaxException | SQLException | ClassNotFoundException | OAuthSystemException e ) {
+            System.out.println( e.getMessage() );
         }
 
+        return Response.ok().build();
+    }
+
+    @GET
+    @Path( "ping" )
+    public Response ping() {
         return Response.ok().build();
     }
 }
