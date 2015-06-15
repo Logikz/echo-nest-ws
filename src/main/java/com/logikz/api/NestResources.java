@@ -37,6 +37,23 @@ public class NestResources {
     }
 
     @GET
+    @Path( "/{stateId}/temperature" )
+    @Produces( MediaType.TEXT_PLAIN )
+    public Response getTemperature( @PathParam( "stateId" ) String stateId ) {
+        PostgresDAO dao = new PostgresDAO();
+        NestDAO nestDAO = new NestDAO();
+        try{
+            String token = dao.getToken(stateId);
+            int temperature = nestDAO.getTemperature(token);
+            return Response.ok(temperature).build();
+        } catch ( ClassNotFoundException | SQLException | URISyntaxException e ) {
+            e.printStackTrace();
+        }
+
+        return Response.status( Response.Status.INTERNAL_SERVER_ERROR).build();
+    }
+
+    @GET
     @Path( "/{stateId}/auth" )
     public Response authorize( @PathParam( "stateId" ) String stateId ) {
         NestDAO nestDAO = new NestDAO();

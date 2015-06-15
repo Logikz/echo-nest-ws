@@ -21,7 +21,7 @@ public class NestDAO {
     public static final String THERMOSTAT = "LULEEUtZ_cQQs-LF12lyuhOizG3Nxo_B";
 
     public Response setTemperature( String token, int temperature ) {
-        System.out.println("Setting the temperature to " + temperature);
+        System.out.println( "Setting the temperature to " + temperature );
         Response response = ClientBuilder.newClient()
                                          .target( "https://developer-api.nest.com" )
                                          .path( "/devices/thermostats/" + THERMOSTAT + "/target_temperature_f" )
@@ -31,17 +31,8 @@ public class NestDAO {
                                          .put( Entity.entity( temperature, MediaType.TEXT_PLAIN_TYPE ) );
 
         if ( response.getStatus() != 200 ) {
-            System.out.println("Failed...trying again in 5 seconds");
-            System.out.println(response.readEntity( String.class ));
-//            try {
-//                for(int i=0; i < 10; ++i){
-//                    Thread.sleep( 1000 * 5 );
-//                    setTemperature( token, temperature );
-//                }
-//
-//            } catch ( InterruptedException e ) {
-//                return Response.ok().build();
-//            }
+            System.out.println( "Failed...trying again in 5 seconds" );
+            System.out.println( response.readEntity( String.class ) );
         }
 
         return response;
@@ -108,5 +99,23 @@ public class NestDAO {
             return null;
         }
 
+    }
+
+    public int getTemperature( String token ) {
+        System.out.println( "Getting the temperature" );
+        Response response = ClientBuilder.newClient()
+                                         .target( "https://developer-api.nest.com" )
+                                         .path( "/devices/thermostats/" + THERMOSTAT + "/target_temperature_f" )
+                                         .queryParam( "auth", token )
+                                         .request()
+                                         .accept( MediaType.APPLICATION_JSON )
+                                         .get();
+
+        if ( response.getStatus() != 200 ) {
+            System.out.println( "Failed...trying again in 5 seconds" );
+            System.out.println( response.readEntity( String.class ) );
+        }
+
+        return response.readEntity( Integer.class );
     }
 }
