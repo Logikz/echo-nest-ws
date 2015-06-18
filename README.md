@@ -8,7 +8,9 @@ If you are unfamiliar with heroku, I recommend their getting started guide for h
 When deploying to Heroku, the following config variables are required
 
 -NEST_CLIENT_ID: Can be found in the Nest DeveloperLabs client page: https://developer.nest.com/clients
+
 -NEST_CLIENT_SECRET: Can be found in the Nest DeveloperLabs client page: https://developer.nest.com/clients
+
 -NEST_THERMOSTAT_ID: You'll need to view the data model for your thermostat, and copy it to this variable. See Appendix for more information.
 
 #Building
