@@ -19,6 +19,19 @@ public class NestDAO {
     public static final String CLIENT_ID = System.getenv( "NEST_CLIENT_ID" );
     public static final String CLIENT_SECRET = System.getenv( "NEST_CLIENT_SECRET" );
     public static final String THERMOSTAT = System.getenv( "NEST_THERMOSTAT_ID" );
+    private static NestDAO INSTANCE = getInstance();
+
+    public static NestDAO getInstance() {
+        if ( INSTANCE == null ) {
+            INSTANCE = new NestDAO();
+        }
+        return INSTANCE;
+    }
+
+
+    private NestDAO() {
+    }
+
 
     public Response setTemperature( String token, int temperature ) {
         System.out.println( "Setting the temperature to " + temperature );
