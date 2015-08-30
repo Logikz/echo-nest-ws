@@ -19,7 +19,7 @@ public class Main {
         System.out.println("Context Path Created");
 
         ServletHolder jerseyServlet = context.addServlet(
-                org.glassfish.jersey.servlet.ServletContainer.class, "/*");
+                org.glassfish.jersey.servlet.ServletContainer.class, "/api/v1/*");
         jerseyServlet.setInitOrder(0);
 
         // Tells the Jersey Servlet which REST service/class to load.
