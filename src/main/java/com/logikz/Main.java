@@ -2,8 +2,10 @@ package com.logikz;
 
 import com.logikz.api.NestResources;
 import io.swagger.jaxrs.config.BeanConfig;
+import io.swagger.jaxrs.listing.ApiListingResource;
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -26,13 +28,13 @@ public class Main {
     public static void main( String[] args ) {
         LOG.info( "--- ECHO NEST BRIDGE COMING ALIVE ---" );
         try {
-            Server server = new Server( Integer.valueOf( System.getenv( "PORT" ) ) );
             // Workaround for resources from JAR files
             Resource.setDefaultUseCaches( false );
 
+            Server server = new Server( Integer.valueOf( System.getenv( "PORT" ) ) );
             final HandlerList handlers = new HandlerList();
 
-            handlers.addHandler( getResourceHandler() );
+            handlers.addHandler( getRestHandler() );
             handlers.addHandler( getSwaggerHandler() );
 
             server.setHandler( handlers );
@@ -55,11 +57,26 @@ public class Main {
                                                     .toString() );
         swaggerResources.setWelcomeFiles( new String[]{ "index.html" } );
 
-        ServletContextHandler swagger = new ServletContextHandler( ServletContextHandler.SESSIONS );
+        ContextHandler swagger = new ContextHandler();
         swagger.setContextPath( "/swagger/" );
         swagger.setHandler( swaggerResources );
 
         return swagger;
+    }
+
+    private static Handler getRestHandler() {
+        ResourceConfig resourceConfig = new ResourceConfig();
+        resourceConfig.packages( NestResources.class.getPackage().getName(), ApiListingResource.class.getPackage()
+                                                                                                     .getName() );
+
+        ServletContainer container = new ServletContainer( resourceConfig );
+        ServletHolder holder = new ServletHolder( container );
+        ServletContextHandler context = new ServletContextHandler( ServletContextHandler.SESSIONS );
+
+        context.setContextPath( "/" );
+        context.addServlet( holder, "/api/v1/*" );
+
+        return context;
     }
 
     private static void initSwagger() {
@@ -71,18 +88,5 @@ public class Main {
         beanConfig.setResourcePackage( "com.logikz.api" );
         beanConfig.setScan( true );
     }
-
-    private static Handler getResourceHandler() {
-        ResourceConfig resourceConfig = new ResourceConfig();
-        resourceConfig.packages( NestResources.class.getPackage().getName(), "io.swagger.jaxrs.listing" );
-
-        ServletContainer container = new ServletContainer( resourceConfig );
-        ServletHolder holder = new ServletHolder( container );
-        ServletContextHandler context = new ServletContextHandler( ServletContextHandler.SESSIONS );
-
-        context.setContextPath( "/" );
-        context.addServlet( holder, "/api/v1/*" );
-
-        return context;
-    }
 }
+
