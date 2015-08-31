@@ -1,6 +1,7 @@
 package com.logikz;
 
 import com.logikz.api.NestResources;
+import com.logikz.utils.SwaggerDocsServlet;
 import io.swagger.jaxrs.config.BeanConfig;
 import io.swagger.jaxrs.listing.ApiListingResource;
 import org.eclipse.jetty.server.Handler;
@@ -16,7 +17,9 @@ import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.DispatcherType;
 import java.net.URISyntaxException;
+import java.util.EnumSet;
 
 
 /**
@@ -52,16 +55,22 @@ public class Main {
     }
 
     private static Handler getSwaggerHandler() throws URISyntaxException {
-        ResourceHandler swaggerResources = new ResourceHandler();
-        swaggerResources.setResourceBase( Main.class.getClassLoader().getResource( "webapp" ).toURI()
-                                                    .toString() );
-        swaggerResources.setWelcomeFiles( new String[]{ "index.html" } );
+        ServletHolder pathHolder = new ServletHolder(new SwaggerDocsServlet(pathPrefix));
+        servlets.addServlet( pathHolder, SwaggerDocsServlet.PATH_SERVLET_ENDPOINT );
 
-        ContextHandler swagger = new ContextHandler();
-        swagger.setContextPath( "/swagger/" );
-        swagger.setHandler( swaggerResources );
+        // Create servlet for the UI
+        URL swaggerUi = Resources.getResource(Main.class, "webapp");
+        Resource urlResource = URLResource.newResource( swaggerUi );
 
-        return swagger;
+        ResourceHandler swaggerUIHandler = new ResourceHandler();
+        swaggerUIHandler.setDirectoriesListed( true );
+        swaggerUIHandler.setBaseResource( urlResource );
+        swaggerUIHandler.setWelcomeFiles(new String[]{ "index.html" });
+
+        ContextHandler context = new ContextHandler(swaggerUiPathPrefix);
+        context.setHandler( swaggerUIHandler );
+
+        return context;
     }
 
     private static Handler getRestHandler() {
@@ -75,6 +84,15 @@ public class Main {
 
         context.setContextPath( "/" );
         context.addServlet( holder, "/api/v1/*" );
+
+        // Open CORS filter
+        FilterHolder filter = new FilterHolder();
+        filter.setInitParameter("allowedOrigins", "*");
+        filter.setInitParameter("allowedMethods", "POST,GET,OPTIONS,PUT,DELETE,HEAD");
+        filter.setInitParameter("allowedHeaders", "*");
+        filter.setInitParameter("allowCredentials", "true");
+        filter.setFilter( new CrossOriginFilter() );
+        context.addFilter( filter, "/*", EnumSet.of( DispatcherType.ASYNC, DispatcherType.REQUEST, DispatcherType.ERROR, DispatcherType.INCLUDE ) );
 
         return context;
     }
