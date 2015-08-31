@@ -1,5 +1,6 @@
 package com.logikz;
 
+import com.google.common.io.Resources;
 import com.logikz.api.NestResources;
 import com.logikz.utils.SwaggerDocsServlet;
 import io.swagger.jaxrs.config.BeanConfig;
@@ -9,9 +10,12 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.URLResource;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
 import org.slf4j.Logger;
@@ -19,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.DispatcherType;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.EnumSet;
 
 
@@ -47,28 +52,24 @@ public class Main {
             LOG.trace( "Server starting" );
             server.start();
             LOG.trace( "Server started" );
-            server.join();
-            LOG.trace( "Server joined" );
         } catch ( Exception e ) {
             LOG.error( e.getMessage(), e );
         }
     }
 
     private static Handler getSwaggerHandler() throws URISyntaxException {
-        ServletHolder pathHolder = new ServletHolder(new SwaggerDocsServlet(pathPrefix));
-        servlets.addServlet( pathHolder, SwaggerDocsServlet.PATH_SERVLET_ENDPOINT );
-
         // Create servlet for the UI
-        URL swaggerUi = Resources.getResource(Main.class, "webapp");
+        URL swaggerUi = Resources.getResource( Main.class, "webapp" );
         Resource urlResource = URLResource.newResource( swaggerUi );
 
         ResourceHandler swaggerUIHandler = new ResourceHandler();
         swaggerUIHandler.setDirectoriesListed( true );
         swaggerUIHandler.setBaseResource( urlResource );
-        swaggerUIHandler.setWelcomeFiles(new String[]{ "index.html" });
+        swaggerUIHandler.setWelcomeFiles( new String[]{ "index.html" } );
 
-        ContextHandler context = new ContextHandler(swaggerUiPathPrefix);
+        ContextHandler context = new ContextHandler("/swagger");
         context.setHandler( swaggerUIHandler );
+
 
         return context;
     }
@@ -93,6 +94,10 @@ public class Main {
         filter.setInitParameter("allowCredentials", "true");
         filter.setFilter( new CrossOriginFilter() );
         context.addFilter( filter, "/*", EnumSet.of( DispatcherType.ASYNC, DispatcherType.REQUEST, DispatcherType.ERROR, DispatcherType.INCLUDE ) );
+
+        //auto load swagger ui
+        ServletHolder pathHolder = new ServletHolder(new SwaggerDocsServlet("/api/v1"));
+        context.addServlet( pathHolder, SwaggerDocsServlet.PATH_SERVLET_ENDPOINT );
 
         return context;
     }
