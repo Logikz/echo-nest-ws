@@ -105,9 +105,9 @@ public class Main {
     private static void initSwagger() {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion( "1.0.0" );
-        beanConfig.setSchemes( new String[]{ "http" } );
+        beanConfig.setSchemes( new String[]{ "https" } );
         beanConfig.setHost( System.getenv( "SWAGGER_HOST" ) );
-        beanConfig.setBasePath( "/api/v1/" );
+        beanConfig.setBasePath( "/api/v1" );
         beanConfig.setResourcePackage( "com.logikz.api" );
         beanConfig.setScan( true );
     }
