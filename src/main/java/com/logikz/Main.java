@@ -106,7 +106,7 @@ public class Main {
         BeanConfig beanConfig = new BeanConfig();
         beanConfig.setVersion( "1.0.0" );
         beanConfig.setSchemes( new String[]{ "http" } );
-        beanConfig.setHost( "localhost" );
+        beanConfig.setHost( System.getenv( "SWAGGER_HOST" ) );
         beanConfig.setBasePath( "/api/v1/" );
         beanConfig.setResourcePackage( "com.logikz.api" );
         beanConfig.setScan( true );
