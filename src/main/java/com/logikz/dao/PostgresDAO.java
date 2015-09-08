@@ -4,10 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URISyntaxException;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 
 /**
@@ -32,10 +29,13 @@ public class PostgresDAO {
     public void setToken( String stateId, String token, Connection connection ) throws URISyntaxException, SQLException, ClassNotFoundException {
         LOG.trace( "Set auth token" );
 
-        Statement statement = connection.createStatement();
-        statement.executeQuery( "DROP TABLE auth" );
-        statement.executeQuery( "CREATE TABLE auth(stateid VARCHAR(50), token VARCHAR(500))" );
-        statement.executeUpdate( "INSERT INTO auth VALUES ('" + stateId + "', '" + token + "')" );
+
+        connection.prepareStatement( "DROP TABLE auth" ).executeQuery();
+        connection.prepareStatement( "CREATE TABLE auth(stateid VARCHAR(50), token VARCHAR(500))" ).executeQuery();
+        PreparedStatement statement = connection.prepareStatement( "INSERT INTO auth VALUES (?, ?" );
+        statement.setString( 1, stateId );
+        statement.setString( 2, token );
+        statement.executeUpdate();
 
     }
 
@@ -43,10 +43,10 @@ public class PostgresDAO {
         LOG.trace( "Get auth token" );
         //dump();
 
-        Statement statement = connection.createStatement();
-        String sql = "SELECT token FROM auth WHERE stateid='" + stateId + "'";
-        LOG.trace( sql );
-        try ( ResultSet resultSet = statement.executeQuery( sql ) ) {
+        PreparedStatement statement = connection.prepareStatement( "SELECT token FROM auth WHERE stateid=?" );
+        statement.setString( 1, stateId );
+
+        try ( ResultSet resultSet = statement.executeQuery() ) {
             if ( resultSet.next() ) {
                 LOG.trace( "Auth token: " + resultSet.getString( 1 ) );
                 return resultSet.getString( 1 );
@@ -57,8 +57,8 @@ public class PostgresDAO {
     }
 
     private void dump( Connection connection ) throws ClassNotFoundException, SQLException, URISyntaxException {
-        Statement statement = connection.createStatement();
-        try ( ResultSet resultSet = statement.executeQuery( "SELECT * FROM auth" ) ) {
+        PreparedStatement statement = connection.prepareStatement( "SELECT * FROM auth" )
+        try ( ResultSet resultSet = statement.executeQuery() ) {
             while ( resultSet.next() ) {
                 LOG.trace( "----ROW----" );
                 LOG.trace( resultSet.getString( 0 ) );
